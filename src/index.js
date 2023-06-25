@@ -1,6 +1,7 @@
 import process from 'node:process';
 import os from 'node:os';
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import textFormat from './textFormat.js';
 
 const USERNAME = getUsernameFromArgs(process.argv);
@@ -20,6 +21,9 @@ process.stdin.on('data', (data) => {
       case 'ls':
         listDirectory();
         break;
+      case 'up':
+        upDirectory();
+        break;
       default:
         process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
         showCurrentDir();
@@ -35,6 +39,10 @@ process.on('exit', () => {
   process.stdout.write(textFormat(`\nThank you for using File Manager, ${USERNAME}, goodbye!`));
 })
 
+function upDirectory() {
+  dir = path.join(dir, '../'); 
+  showCurrentDir();
+}
 
 function listDirectory() {
   fs.readdir(dir, { withFileTypes: true }).then((files) => {
