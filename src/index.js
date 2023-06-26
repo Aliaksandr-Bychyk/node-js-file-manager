@@ -2,7 +2,7 @@ import process from 'node:process';
 import os from 'node:os';
 
 import printText from './utils/printText.js';
-import showCurrentDir from './showCurrentDir.js';
+import showCurrentDir from './utils/showCurrentDir.js';
 
 import upDirectory from './navigation/upDirectory.js';
 import currentDirectory from './navigation/currentDirectory.js';
@@ -32,7 +32,7 @@ process.stdin.on('data', async (data) => {
         await upDirectory();
         break;
       case 'cd':
-        await currentDirectory(input[1].replace('/', '\\'));
+        await currentDirectory(input);
         break;
       case 'cat':
         await concatenateFile(input[1].replace('/', '\\'));
