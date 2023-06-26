@@ -35,23 +35,6 @@ const moveFile = async (input, isCopy) => {
 
       }
     );
-    // writableStream.on('finish', () => {
-    //   if (isCopy) {
-    //     printText('File copied successfully!', 'green');
-    //   } else {
-    //     unlink(PATH, (error) => {
-    //       if (error) {
-    //         operationFailed();    
-    //       } else {
-    //         printText('File moved successfully!', 'green');
-    //       }
-    //     });
-    //   }
-    // });
-
-    // writableStream.on('error', () => {
-    //   operationFailed();
-    // });
 
   } else {
     invalidInput();
