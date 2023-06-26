@@ -13,6 +13,7 @@ import addFile from './basic-operations/addFile.js';
 import renameFile from './basic-operations/renameFile.js';
 import concatenateFile from './basic-operations/concatenateFile.js';
 import moveFile from './basic-operations/moveFile.js';
+import removeFile from './basic-operations/removeFile.js';
 
 const USERNAME = getUsernameFromArgs(process.argv);
 global.dir = homedir();
@@ -35,6 +36,7 @@ process.stdin.on('data', async (data) => {
       { name: 'rn', function: () => renameFile(input)},
       { name: 'cp', function: () => moveFile(input, true)},
       { name: 'mv', function: () => moveFile(input, false)},
+      { name: 'rm', function: () => removeFile(input)},
     ];
     if (commands.filter(e => e.name === input[0]).length > 0) {
       commands.map(async (command) => {
