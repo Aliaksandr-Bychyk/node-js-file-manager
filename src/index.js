@@ -14,8 +14,12 @@ import renameFile from './basic-operations/renameFile.js';
 import concatenateFile from './basic-operations/concatenateFile.js';
 import moveFile from './basic-operations/moveFile.js';
 import removeFile from './basic-operations/removeFile.js';
+
 import operatingSystem from './operating-system/operatingSystem.js';
+
 import hashFile from './hash/hashFile.js';
+
+import compressFile from './compress/compressFile.js';
 
 const USERNAME = getUsernameFromArgs(process.argv);
 global.dir = homedir();
@@ -41,6 +45,8 @@ process.stdin.on('data', async (data) => {
       { name: 'rm', function: () => removeFile(input) },
       { name: 'os', function: () => operatingSystem(input) },
       { name: 'hash', function: () => hashFile(input) },
+      { name: 'compress', function: () => compressFile(input, false) },
+      { name: 'decompress', function: () => compressFile(input, true) },
     ];
     if (commands.filter(e => e.name === input[0]).length > 0) {
       commands.map(async (command) => {
