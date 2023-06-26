@@ -15,6 +15,7 @@ import concatenateFile from './basic-operations/concatenateFile.js';
 import moveFile from './basic-operations/moveFile.js';
 import removeFile from './basic-operations/removeFile.js';
 import operatingSystem from './operating-system/operatingSystem.js';
+import hashFile from './hash/hashFile.js';
 
 const USERNAME = getUsernameFromArgs(process.argv);
 global.dir = homedir();
@@ -39,6 +40,7 @@ process.stdin.on('data', async (data) => {
       { name: 'mv', function: () => moveFile(input, false) },
       { name: 'rm', function: () => removeFile(input) },
       { name: 'os', function: () => operatingSystem(input) },
+      { name: 'hash', function: () => hashFile(input) },
     ];
     if (commands.filter(e => e.name === input[0]).length > 0) {
       commands.map(async (command) => {

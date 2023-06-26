@@ -1,7 +1,6 @@
 import os from 'node:os';
 import printText from '../utils/printText.js';
-import { invalidInput, operationFailed } from '../utils/errorMessages.js';
-import isAbsolutePath from '../utils/isAbsolutePath.js';
+import { invalidInput } from '../utils/errorMessages.js';
 
 const endOfLine = () => {
   printText(JSON.stringify(os.EOL));
