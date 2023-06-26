@@ -3,12 +3,12 @@ import os from 'node:os';
 import fs from 'node:fs/promises';
 import { createReadStream } from 'fs';
 import path from 'node:path';
-import textFormat from './textFormat.js';
+import printText from './textFormat.js';
 
 const USERNAME = getUsernameFromArgs(process.argv);
 let dir = os.homedir();
 
-process.stdout.write(textFormat(`Welcome to the File Manager, ${USERNAME}!\n`));
+printText(`Welcome to the File Manager, ${USERNAME}!\n`);
 
 process.stdin.setEncoding('utf8');
 
@@ -35,10 +35,10 @@ process.stdin.on('data', (data) => {
         addFile(input[1]);
         break;
       case 'rn':
-        renameFile(input[1], input[2]);
+        renameFile(input[1].replace('/', '\\'), input[2].replace('/', '\\'));
         break;
       default:
-        process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
+        printText('ERROR: Invalid input', 'red');
         showCurrentDir();
         break;
     }
@@ -49,18 +49,19 @@ process.on('SIGINT', () => {
   process.exit();
 })
 process.on('exit', () => {
-  process.stdout.write(textFormat(`\nThank you for using File Manager, ${USERNAME}, goodbye!`));
+  printText(`\nThank you for using File Manager, ${USERNAME}, goodbye!`);
 })
 
 function renameFile(pathToFile, newFilename) {
   const PATH = pathToFile.includes(':') && pathToFile.includes('\\') ? pathToFile : path.join(dir, pathToFile);
+  // console.log(PATH, path.join(path.dirname(PATH), newFilename));
   fs.rename(PATH, path.join(path.dirname(PATH), newFilename))
     .then(() => {
-      process.stdout.write(textFormat('File renamed!'));
+      printText('File renamed!');
       showCurrentDir();
     })
     .catch(() => {
-      process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
+      printText('ERROR: Invalid input', 'red');
       showCurrentDir();
     });
 }
@@ -68,11 +69,11 @@ function renameFile(pathToFile, newFilename) {
 function addFile(filename) {
   fs.writeFile(path.join(dir, filename), '')
     .then(() => {
-      process.stdout.write(textFormat('File created!'));
+      printText('File created!');
       showCurrentDir();
     })
     .catch(() => {
-      process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
+      printText('ERROR: Invalid input', 'red');
       showCurrentDir();
     });
 }
@@ -89,11 +90,11 @@ function concatenateFile(arg) {
     content += chunk;
   })
   readableStream.on('error', () => {
-    process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
+    printText('ERROR: Invalid input', 'red');
     showCurrentDir();
   })
   readableStream.on('end', () => {
-    process.stdout.write(textFormat(content));
+    printText(content);
     showCurrentDir();
   });
 }
@@ -106,7 +107,7 @@ function currentDirectory(pathTo) {
       showCurrentDir();
     })
     .catch(() => {
-      process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
+      printText('ERROR: Invalid input', 'red');
       showCurrentDir();
     });
 }
@@ -129,7 +130,7 @@ function listDirectory() {
 }
 
 function showCurrentDir() {
-  process.stdout.write(textFormat(`You are currently in ${dir}`, 'yellow'));
+  printText(`You are currently in ${dir}`, 'yellow');
 }
 
 function getUsernameFromArgs(args) {

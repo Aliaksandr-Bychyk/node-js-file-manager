@@ -1,15 +1,21 @@
-const textFormat = (text, format) => {
-  switch (format) {
-    case 'red':
-      return `\x1b[31m${text}\x1b[89m\n\x1b[37m\x1b[89m`
-      break;
-    case 'yellow':
-      return `\x1b[33m${text}\x1b[89m\n\x1b[37m\x1b[89m`
-      break;
-    default:
-      return `\x1b[37m${text}\x1b[89m\n`
-      break;
-  }
+const setColor = (text, first = 37, second = 89) => {
+  return `\x1b[${first}m${text}\x1b[${second}m\n\x1b[37m\x1b[89m`
 }
 
-export default textFormat;
+const printText = (text, format) => {
+  let formattedText = '';
+  switch (format) {
+    case 'red':
+      formattedText = setColor(text, 31, 89);
+      break;
+    case 'yellow':
+      formattedText = setColor(text, 33, 89);
+      break;
+    default:
+      formattedText = setColor(text);
+      break;
+  }
+  return process.stdout.write(formattedText)
+}
+
+export default printText;
