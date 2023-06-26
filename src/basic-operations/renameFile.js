@@ -1,17 +1,23 @@
-import path from 'node:path';
-import fs from 'node:fs/promises';
+import { join, dirname } from 'node:path';
+import { rename } from 'node:fs/promises';
 import printText from "../utils/printText.js";
+import { invalidInput, operationFailed } from '../utils/errorMessages.js';
 
-const renameFile = async (pathToFile, newFilename) => {
-  const PATH = pathToFile.includes(':') && pathToFile.includes('\\') ? pathToFile : path.join(dir, pathToFile);
-  // console.log(PATH, path.join(path.dirname(PATH), newFilename));
-  await fs.rename(PATH, path.join(path.dirname(PATH), newFilename))
-    .then(() => {
-      printText('File renamed!');
-    })
-    .catch(() => {
-      printText('ERROR: Invalid input', 'red');
-    });
+const renameFile = async (input) => {
+  if (input.length >= 3) {
+    const pathToFile = input[1].replace('/', '\\');
+    const newFilename = input[2];
+    const PATH = pathToFile.includes(':') && pathToFile.includes('\\') ? pathToFile : join(dir, pathToFile);
+    await rename(PATH, join(dirname(PATH), newFilename))
+      .then(() => {
+        printText('File renamed successfully!', 'green');
+      })
+      .catch(() => {
+        operationFailed();
+      });
+  } else {
+    invalidInput();
+  }
 }
 
 export default renameFile;

@@ -13,6 +13,9 @@ const printText = (text, format) => {
     case 'yellow':
       formattedText = setColor(text, 33, 89);
       break;
+    case 'green':
+      formattedText = setColor(text, 32, 89);
+      break;
     default:
       formattedText = setColor(text);
       break;
