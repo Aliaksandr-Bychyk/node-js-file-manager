@@ -34,6 +34,9 @@ process.stdin.on('data', (data) => {
       case 'add':
         addFile(input[1]);
         break;
+      case 'rn':
+        renameFile(input[1], input[2]);
+        break;
       default:
         process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
         showCurrentDir();
@@ -48,6 +51,19 @@ process.on('SIGINT', () => {
 process.on('exit', () => {
   process.stdout.write(textFormat(`\nThank you for using File Manager, ${USERNAME}, goodbye!`));
 })
+
+function renameFile(pathToFile, newFilename) {
+  const PATH = pathToFile.includes(':') && pathToFile.includes('\\') ? pathToFile : path.join(dir, pathToFile);
+  fs.rename(PATH, path.join(path.dirname(PATH), newFilename))
+    .then(() => {
+      process.stdout.write(textFormat('File renamed!'));
+      showCurrentDir();
+    })
+    .catch(() => {
+      process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
+      showCurrentDir();
+    });
+}
 
 function addFile(filename) {
   fs.writeFile(path.join(dir, filename), '')
