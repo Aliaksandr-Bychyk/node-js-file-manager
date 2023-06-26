@@ -13,8 +13,8 @@ process.stdin.setEncoding('utf8');
 
 process.stdin.on('data', (data) => {
   if (data !== null) {
-    const input = data.trim();
-    switch (input) {
+    const input = data.trim().split(' ');
+    switch (input[0]) {
       case '.exit':
         process.exit();
         break;
@@ -23,6 +23,9 @@ process.stdin.on('data', (data) => {
         break;
       case 'up':
         upDirectory();
+        break;
+      case 'cd':
+        currentDirectory(input[1]);
         break;
       default:
         process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
@@ -38,6 +41,25 @@ process.on('SIGINT', () => {
 process.on('exit', () => {
   process.stdout.write(textFormat(`\nThank you for using File Manager, ${USERNAME}, goodbye!`));
 })
+
+function currentDirectory(arg) {
+  arg = arg.replace('/', '\\');
+  if (arg.includes(':') && arg.includes('\\')) {
+    fs.access(arg, fs.constants.F_OK)
+      .then(() => {
+        dir = arg;
+        showCurrentDir();
+      })
+      .catch(() => console.log('no!'))
+  } else {
+    fs.access(path.join(dir, arg), fs.constants.F_OK)
+      .then(() => {
+        dir = path.join(dir, arg);
+        showCurrentDir();
+      })
+      .catch(() => console.log('no!'))
+  }
+}
 
 function upDirectory() {
   dir = path.join(dir, '../'); 
