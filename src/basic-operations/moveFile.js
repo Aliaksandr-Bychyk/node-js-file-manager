@@ -1,16 +1,14 @@
 import { invalidInput, operationFailed } from "../utils/errorMessages.js";
 import { createReadStream, createWriteStream, unlink } from 'node:fs';
 import { join, basename } from 'node:path';
-import isAbsolutePath from "../utils/isAbsolutePath.js";
+import fixPath from "../utils/fixPath.js";
 import printText from "../utils/printText.js";
 import { pipeline } from "node:stream";
 
 const moveFile = async (input, isCopy) => {
-  if (input.length >= 3) {
-    const pathToFile = input[1].replace('/', '\\');
-    const pathToDirectory = input[2].replace('/', '\\');
-    const PATH = isAbsolutePath(pathToFile) ? pathToFile : join(global.dir, pathToFile);
-    const PATH_END = isAbsolutePath(pathToDirectory) ? pathToDirectory : join(global.dir, pathToDirectory);
+  if (input.length >= 3) { 
+    const PATH = fixPath(input[1]);
+    const PATH_END = fixPath(input[2]);
     
     const fileName = basename(PATH);
 
