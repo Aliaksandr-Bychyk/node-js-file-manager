@@ -25,7 +25,7 @@ process.stdin.on('data', (data) => {
         upDirectory();
         break;
       case 'cd':
-        currentDirectory(input[1]);
+        currentDirectory(input[1].replace('/', '\\'));
         break;
       default:
         process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
@@ -42,23 +42,21 @@ process.on('exit', () => {
   process.stdout.write(textFormat(`\nThank you for using File Manager, ${USERNAME}, goodbye!`));
 })
 
-function currentDirectory(arg) {
-  arg = arg.replace('/', '\\');
-  if (arg.includes(':') && arg.includes('\\')) {
-    fs.access(arg, fs.constants.F_OK)
-      .then(() => {
-        dir = arg;
-        showCurrentDir();
-      })
-      .catch(() => console.log('no!'))
-  } else {
-    fs.access(path.join(dir, arg), fs.constants.F_OK)
-      .then(() => {
-        dir = path.join(dir, arg);
-        showCurrentDir();
-      })
-      .catch(() => console.log('no!'))
-  }
+async function getAccess(pathTo) {
+  return fs.access(pathTo, fs.constants.F_OK)
+}
+
+function currentDirectory(pathTo) {
+  const PATH = pathTo.includes(':') && pathTo.includes('\\') ? pathTo : path.join(dir, pathTo);
+  getAccess(PATH)
+    .then(() => {
+      dir = PATH;
+      showCurrentDir();
+    })
+    .catch(() => {
+      process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
+      showCurrentDir();
+    });
 }
 
 function upDirectory() {
