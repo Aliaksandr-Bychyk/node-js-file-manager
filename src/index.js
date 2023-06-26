@@ -1,6 +1,7 @@
 import process from 'node:process';
 import os from 'node:os';
 import fs from 'node:fs/promises';
+import { createReadStream } from 'fs';
 import path from 'node:path';
 import textFormat from './textFormat.js';
 
@@ -27,6 +28,9 @@ process.stdin.on('data', (data) => {
       case 'cd':
         currentDirectory(input[1].replace('/', '\\'));
         break;
+      case 'cat':
+        concatenateFile(input[1].replace('/', '\\'));
+        break;
       default:
         process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
         showCurrentDir();
@@ -42,8 +46,25 @@ process.on('exit', () => {
   process.stdout.write(textFormat(`\nThank you for using File Manager, ${USERNAME}, goodbye!`));
 })
 
-async function getAccess(pathTo) {
+function getAccess(pathTo) {
   return fs.access(pathTo, fs.constants.F_OK)
+}
+
+function concatenateFile(arg) {
+  const PATH = arg.includes(':') && arg.includes('\\') ? arg : path.join(dir, arg);
+  let content = '';
+  const readableStream = createReadStream(PATH, {encoding: 'utf-8'});
+  readableStream.on('data', (chunk) => {
+    content += chunk;
+  })
+  readableStream.on('error', () => {
+    process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
+    showCurrentDir();
+  })
+  readableStream.on('end', () => {
+    process.stdout.write(textFormat(content));
+    showCurrentDir();
+  });
 }
 
 function currentDirectory(pathTo) {
