@@ -31,6 +31,9 @@ process.stdin.on('data', (data) => {
       case 'cat':
         concatenateFile(input[1].replace('/', '\\'));
         break;
+      case 'add':
+        addFile(input[1]);
+        break;
       default:
         process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
         showCurrentDir();
@@ -45,6 +48,18 @@ process.on('SIGINT', () => {
 process.on('exit', () => {
   process.stdout.write(textFormat(`\nThank you for using File Manager, ${USERNAME}, goodbye!`));
 })
+
+function addFile(filename) {
+  fs.writeFile(path.join(dir, filename), '')
+    .then(() => {
+      process.stdout.write(textFormat('File created!'));
+      showCurrentDir();
+    })
+    .catch(() => {
+      process.stdout.write(textFormat('ERROR: Invalid input', 'red'));
+      showCurrentDir();
+    });
+}
 
 function getAccess(pathTo) {
   return fs.access(pathTo, fs.constants.F_OK)
