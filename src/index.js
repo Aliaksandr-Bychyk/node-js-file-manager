@@ -14,6 +14,7 @@ import renameFile from './basic-operations/renameFile.js';
 import concatenateFile from './basic-operations/concatenateFile.js';
 import moveFile from './basic-operations/moveFile.js';
 import removeFile from './basic-operations/removeFile.js';
+import operatingSystem from './operating-system/operatingSystem.js';
 
 const USERNAME = getUsernameFromArgs(process.argv);
 global.dir = homedir();
@@ -27,16 +28,17 @@ process.stdin.on('data', async (data) => {
   if (data !== null) {
     const input = data.trim().split(' ');
     const commands = [
-      { name: '.exit', function: () => process.exit()},
-      { name: 'up', function: () => upDirectory()},
-      { name: 'cd', function: () => currentDirectory(input)},
-      { name: 'ls', function: () => listDirectory()},
-      { name: 'cat', function: () => concatenateFile(input)},
-      { name: 'add', function: () => addFile(input)},
-      { name: 'rn', function: () => renameFile(input)},
-      { name: 'cp', function: () => moveFile(input, true)},
-      { name: 'mv', function: () => moveFile(input, false)},
-      { name: 'rm', function: () => removeFile(input)},
+      { name: '.exit', function: () => process.exit() },
+      { name: 'up', function: () => upDirectory() },
+      { name: 'cd', function: () => currentDirectory(input) },
+      { name: 'ls', function: () => listDirectory() },
+      { name: 'cat', function: () => concatenateFile(input) },
+      { name: 'add', function: () => addFile(input) },
+      { name: 'rn', function: () => renameFile(input) },
+      { name: 'cp', function: () => moveFile(input, true) },
+      { name: 'mv', function: () => moveFile(input, false) },
+      { name: 'rm', function: () => removeFile(input) },
+      { name: 'os', function: () => operatingSystem(input) },
     ];
     if (commands.filter(e => e.name === input[0]).length > 0) {
       commands.map(async (command) => {
