@@ -16,8 +16,6 @@ const moveFile = async (input, isCopy) => {
 
     const readableStream = createReadStream(PATH, { encoding: 'utf-8' });
     const writableStream = createWriteStream(join(PATH_END, fileName), { encoding: 'utf-8' });
-    
-    readableStream.pipe(writableStream);
 
     pipeline(
       readableStream,
