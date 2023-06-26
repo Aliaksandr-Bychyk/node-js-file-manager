@@ -1,9 +1,9 @@
 import { invalidInput, operationFailed } from "../utils/errorMessages.js";
-import fs from 'node:fs';
+import { unlink, createReadStream, createWriteStream } from 'node:fs';
 import { join, basename } from 'node:path';
 import isAbsolutePath from "../utils/isAbsolutePath.js";
 import printText from "../utils/printText.js";
-import zlib from 'node:zlib';
+import { createBrotliDecompress, createBrotliCompress } from 'node:zlib';
 import { pipeline } from "node:stream";
 
 const compressFile = async (input, isDecompress) => {
@@ -15,9 +15,9 @@ const compressFile = async (input, isDecompress) => {
     
     const fileName = isDecompress ? `${basename(PATH).slice(0, -3)}` : `${basename(PATH)}.br`;
     
-    const brotli = isDecompress ? zlib.createBrotliDecompress() : zlib.createBrotliCompress();
-    const readableStream = fs.createReadStream(PATH);
-    const writableStream = fs.createWriteStream(join(PATH_END, fileName));
+    const brotli = isDecompress ? createBrotliDecompress() : createBrotliCompress();
+    const readableStream = createReadStream(PATH);
+    const writableStream = createWriteStream(join(PATH_END, fileName));
 
     pipeline(
       readableStream,
@@ -26,7 +26,7 @@ const compressFile = async (input, isDecompress) => {
       (error) => {
         if (error) {
           operationFailed();
-          fs.unlink(join(PATH_END, fileName), () => {});
+          unlink(join(PATH_END, fileName), () => {});
         } else {
           printText(`${isDecompress ? 'Dec' : 'C'}ompression complete successfully.`, 'green');
         }
